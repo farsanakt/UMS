@@ -1,30 +1,36 @@
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
 import { errorHandler } from "./error.js";
-import { config } from "dotenv";
-config();
+import { config } from 'dotenv';
+config()
 
-const secret = process.env.JMT_SECRET || "";
+const secret=process.env.JMT_SECRET|| "";
 
-export const verifyToken = async (req, res, next) => {
 
-  try {
+export const verifyToken = async(req, res, next) => {
+
+   try {
+
+    const token = req.cookies?.jwt;
+    
+    console.log('akakakakakakka',req.cookies);
     
     if (!token) {
-
-      return next(errorHandler(401, "You are not authenticated"));
-
+        console.log('ajajaj');
+        
+        return next(errorHandler(401, 'You are not authenticated'));
     }
-
-    const payload = jwt.verify(token, secret);
-
-    req.user = payload.id;
-
-    next();
-
-  } catch (error) {
+  
+    console.log('akakakakakakkaaaaaaaaa');
+    const payload=  jwt.verify(token,secret);
+    console.log('akakakakakakkaaaaaaaaa');
     
-    console.log(error);
+    req.user=payload.id
 
-    next(errorHandler(400, error.message));
-  }
+    next()
+   } catch (error) {
+    console.log(error);
+    
+        next(errorHandler(400,error.message))
+   }
+
 };
