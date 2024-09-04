@@ -1,9 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
+import axios from 'axios';
+import { updateUserFailure, updateUserStart, updateUserSuccess } from '../redux/user/userSlice';
 
 const Profile = () => {
+
+  const dispatch = useDispatch();
 
   const { currentUser } = useSelector((state) => state.user);
 
@@ -17,27 +21,22 @@ const Profile = () => {
 
   const [uploadSuccess, setUploadSuccess] = useState(false);
 
-  const [formData, setFormData] = useState({
+  const [updateStatus, setUpdateStatus] = useState(null); 
 
+  const [formData, setFormData] = useState({
     username: currentUser.username,
     email: currentUser.email,
     profilePicture: currentUser.profilePicture,
-
   });
 
-  
   useEffect(() => {
-
     if (image) {
-
       setImagePercent(0);
-      setImageError(false); 
+      setImageError(false);
       handleFileUpload(image);
-
     }
   }, [image]);
 
- 
   const handleFileUpload = async (image) => {
 
     const storage = getStorage(app);
@@ -45,7 +44,6 @@ const Profile = () => {
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, image);
 
-  
     uploadTask.on(
       'state_changed',
       (snapshot) => {
@@ -54,23 +52,48 @@ const Profile = () => {
       },
       (error) => {
         setImageError(true);
-        setUploadSuccess(false); 
+        setUploadSuccess(false);
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setFormData({ ...formData, profilePicture: downloadURL });
-          setUploadSuccess(true); 
-          setImageError(false); 
+          setUploadSuccess(true);
+          setImageError(false);
         });
       }
     );
   };
 
-  
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
 
     e.preventDefault();
 
+    try {
+
+      dispatch(updateUserStart());
+
+      const res = await axios.post(`/api/update/${currentUser._id}`, formData);
+
+      if (res.data.success === false) {
+
+        setUpdateStatus('error')
+
+        dispatch(updateUserFailure(res.data))
+
+        return;
+      }
+
+      setUpdateStatus('success')
+
+      dispatch(updateUserSuccess(res.data.data));
+
+    } catch (error) {
+
+      setUpdateStatus('error')
+
+      dispatch(updateUserFailure(error))
+
+    }
   };
 
   return (
@@ -129,10 +152,11 @@ const Profile = () => {
           </label>
           <input
             type='password'
+            value={formData.password}
             id='password'
             placeholder='Enter new password'
             className='w-full bg-slate-100 rounded-lg p-3 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none'
-           
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
           />
         </div>
 
@@ -149,12 +173,16 @@ const Profile = () => {
         <span className='text-red-700 cursor-pointer'>Sign out</span>
       </div>
 
-      {/* Display the upload progress, success, or error message */}
+      
       {imagePercent > 0 && imagePercent < 100 && (
         <p className='text-center mt-4'>Uploading: {imagePercent}%</p>
       )}
       {uploadSuccess && <p className='text-center mt-4 text-green-600'>Image uploaded successfully!</p>}
       {imageError && <p className='text-center mt-4 text-red-600'>Error uploading image</p>}
+
+    
+      {updateStatus === 'success' && <p className='text-center mt-4 text-green-600'>Profile updated successfully!</p>}
+      {updateStatus === 'error' && <p className='text-center mt-4 text-red-600'>Error updating profile</p>}
     </div>
   );
 };

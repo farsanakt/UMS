@@ -9,10 +9,10 @@ export const signup = async (req, res, next) => {
 
   const { username, email, password } = req.body;
 
-  const hashPassword = bcryptjs.hashSync(password, 10);
+   const hashPassword = bcryptjs.hashSync(password, 10);
 
   try {
-    const newUser = new User({ username, email, password: hashPassword });
+    const newUser = new User({ username, email, password:hashPassword });
 
     await newUser.save();
 
@@ -40,13 +40,12 @@ export const signin = async (req, res, next) => {
   
     const validUser = await User.findOne({ email });
 
-    conso
 
-    if (!validUser) return next(errorHandler(404, "User not found"));
+    if (!validUser) return res.status(400).json({mesage:"user not exist"})
 
     const validPassword = bcryptjs.compareSync(password, validUser.password);
 
-    if (!validPassword) return next(errorHandler(401, "Wrong Password"));
+    if (!validPassword) return res.status(400).json({mesage:"wrong passowrd"})
 
     const token = jwt.sign({ id: validUser._id }, secret);
 
@@ -56,13 +55,13 @@ export const signin = async (req, res, next) => {
 
     res
     
-      .cookie("jwt", token, {httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000,
+      .cookie("jwt", token, { maxAge: 30 * 24 * 60 * 60 * 1000,
         path: "/", })
       .status(200)
       .json(rest);
 
   } catch (error) {
-
+    console.log(error)
     next(error);
   }
 };

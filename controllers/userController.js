@@ -11,7 +11,7 @@ export const test=(req,res)=>{
 
 
 export const updateUser=async(req,res,next)=>{
-    
+
     if(req.user !== req.params.id){
        
         return next(errorHandler(401,'you can update only your account'))
@@ -38,7 +38,7 @@ export const updateUser=async(req,res,next)=>{
             {new:true}
         )
     
-        res.status(200).json(updateUser)
+        res.status(200).json({data:updatedUser})
 
        
     } catch (error) {

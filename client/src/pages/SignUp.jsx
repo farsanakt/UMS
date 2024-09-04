@@ -1,6 +1,8 @@
 import axios from 'axios'
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
+import { signInSuccess } from '../redux/user/userSlice'
 
 
 const SignUp = () => {
@@ -12,6 +14,7 @@ const SignUp = () => {
     const [loading,setLoading]=useState(false)
 
     const navigate=useNavigate()
+    const dispatch=useDispatch()
 
     const handleChanges=(e)=>{
 
@@ -26,7 +29,7 @@ const SignUp = () => {
 
             setLoading(true)
 
-            const res = await axios.post('/auth/signup', formData);
+            const res = await axios.post('/api/auth/signup', formData);
 
             console.log(res.data); 
 
@@ -38,8 +41,8 @@ const SignUp = () => {
 
                 return
             }
-
-            navigate('/')
+            dispatch(signInSuccess(res.data))
+            navigate('/signin')
 
         } catch (error) {
 

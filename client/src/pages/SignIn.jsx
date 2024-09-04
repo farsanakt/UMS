@@ -22,7 +22,7 @@ const SignIn = () => {
 
         try {
 
-            const res = await axios.post('/auth/signin', formData)
+            const res = await axios.post('/api/auth/signin', formData)
 
             console.log(res.data)
 
