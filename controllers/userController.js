@@ -1,14 +1,9 @@
+import { config } from "dotenv";
 import User from "../Models/userModel.js"
 import { errorHandler } from "../utils/error.js"
-import bcryptjs from 'bcryptjs'
-
-
-export const test=(req,res)=>{
-    res.json({
-        message:'apiiiiiii'
-    })
-}
-
+import bcryptjs from 'bcryptjs';
+config();
+console.log(process.env.JWT_SECRET);
 
 export const updateUser=async(req,res,next)=>{
 

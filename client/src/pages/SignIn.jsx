@@ -3,21 +3,28 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { signInFailure, signInStart, signInSuccess } from '../redux/user/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
-// import Auth from '../compontes/Auth'
+
 
 const SignIn = () => {
 
     const [formData, setFormData] = useState({})
-    const { loading, error } = useSelector((state) => state.user)
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
 
+    const { loading, error } = useSelector((state) => state.user)
+
+    const dispatch = useDispatch()
+
+    const navigate = useNavigate()
+    
     const handleChanges = (e) => {
+
         setFormData({ ...formData, [e.target.id]: e.target.value })
+
     }
 
     const handleSubmit = async (e) => {
+
         e.preventDefault()
+        
         dispatch(signInStart())
 
         try {

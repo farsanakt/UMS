@@ -14,6 +14,7 @@ const SignUp = () => {
     const [loading,setLoading]=useState(false)
 
     const navigate=useNavigate()
+    
     const dispatch=useDispatch()
 
     const handleChanges=(e)=>{

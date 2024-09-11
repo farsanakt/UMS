@@ -3,10 +3,13 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import userRoutes from '../routes/user_routes.js';
 import authRoutes from '../routes/auth_route.js';
+import adminRoutes from '../routes/admin_route.js'
 import cookieParser from 'cookie-parser';
-import cors from 'cors'; // Import CORS
+
 
 dotenv.config();
+
+
 
 mongoose.connect(process.env.MONGO)
     .then(() => {
@@ -24,6 +27,7 @@ app.use(cookieParser());
 
 app.use('/api', userRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/admin',adminRoutes)
 
 
 app.use((err, req, res, next) => {

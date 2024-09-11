@@ -1,15 +1,15 @@
 import jwt from 'jsonwebtoken';
 import { errorHandler } from "./error.js";
-import { config } from 'dotenv';
-config()
+import dotenv from 'dotenv';
+dotenv.config()
 
-const secret=process.env.JMT_SECRET|| "";
+const secret=process.env.JMT_SECRET;
 
 
 export const verifyToken = async(req, res, next) => {
 
    try {
-
+    console.log(process.env.JWT_SECRET);
     const token = req.cookies?.jwt;
     
     console.log('akakakakakakka',req.cookies);
@@ -21,7 +21,7 @@ export const verifyToken = async(req, res, next) => {
     }
   
     console.log('akakakakakakkaaaaaaaaa');
-    const payload=  jwt.verify(token,secret);
+    const payload=  jwt.verify(token,process.env.JWT_SECRET);
     console.log('akakakakakakkaaaaaaaaa');
     
     req.user=payload.id

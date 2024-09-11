@@ -12,13 +12,16 @@ export const signup = async (req, res, next) => {
    const hashPassword = bcryptjs.hashSync(password, 10);
 
   try {
-    const newUser = new User({ username, email, password:hashPassword });
+
+    const newUser = new User({ username, email, password:hashPassword })
 
     await newUser.save();
 
-    res.status(201).json({ message: "User created successfully" });
+    res.status(201).json({ message: "User created successfully" })
+
   } catch (error) {
-    console.log("Error during user creation:", error);
+
+    console.log("Error during user creation:", error)
 
     next(error);
   }
@@ -34,7 +37,7 @@ export const signin = async (req, res, next) => {
 
   try {
 
-    const secret = process.env.JMT_SECRET || "";
+    const secret = process.env.JMT_SECRET || "eyhje367890oijhbvfuygh99hhdkjskj";
 
     console.log(secret)
   
@@ -61,18 +64,23 @@ export const signin = async (req, res, next) => {
       .json(rest);
 
   } catch (error) {
+
     console.log(error)
+
     next(error);
+
   }
 };
 
-
 export const signout=(req,res)=>{
+
  try{
   
   res.clearCookie('access_token').status(200).json({message:'signout success'})
-
+  
  }catch(err){
+
   console.log(err)
+
  }
 }

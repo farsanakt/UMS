@@ -32,10 +32,13 @@ const Profile = () => {
   });
 
   useEffect(() => {
+
     if (image) {
+
       setImagePercent(0);
       setImageError(false);
       handleFileUpload(image);
+      
     }
   }, [image]);
 
@@ -126,11 +129,17 @@ const Profile = () => {
 
 
   const handleSignOut=async()=>{
+
     try {
+
       await fetch('/api/auth/signout')
+
       dispatch(signout())
+
     } catch (error) {
+
       console.log(error)
+
     }
   }
 
